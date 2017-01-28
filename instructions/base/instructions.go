@@ -4,7 +4,7 @@ import "jvmgo/rtda"
 
 // Instruction 指令接口
 type Instruction interface {
-	FetchOperands()
+	FetchOperands(reader *BytecodeReader)
 	Execute(frame *rtda.Frame)
 }
 
@@ -19,10 +19,18 @@ type Index16Instruction struct {
 	Index uint
 }
 
-func (self *NoOperandsInstruction) FetchOperands() {
+func (self *NoOperandsInstruction) FetchOperands(reader *BytecodeReader) {
 	// do nothing
 }
 
-func (self *BranchInstruction) FetchOperands() {
+func (self *BranchInstruction) FetchOperands(reader *BytecodeReader) {
+	self.Offset = int(reader.ReadInt16())
+}
 
+func (self *Index8Instruction) FetchOperands(reader *BytecodeReader) {
+	self.Index = uint(reader.ReadUint8())
+}
+
+func (self *Index16Instruction) FetchOperands(reader *BytecodeReader) {
+	self.Index = uint(reader.ReadUint16())
 }
