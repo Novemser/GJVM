@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"jvmgo/classfile"
 	"jvmgo/classpath"
-	"strings"
+	"jvmgo/rtda"
 )
 
 func main() {
@@ -20,12 +20,18 @@ func main() {
 }
 
 func startJVM(cmd *Cmd) {
-	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
-	className := strings.Replace(cmd.class, ".", "/", -1)
-	cf := loadClass(className, cp)
-	fmt.Println(cmd.class)
-	printClassInfo(cf)
+	frame := rtda.NewFrame(100, 100)
+	testLocalVars(frame.LocalVars())
+	// testOperandStack(frame.OperandStack())
 }
+
+// func startJVM(cmd *Cmd) {
+// 	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
+// 	className := strings.Replace(cmd.class, ".", "/", -1)
+// 	cf := loadClass(className, cp)
+// 	fmt.Println(cmd.class)
+// 	printClassInfo(cf)
+// }
 
 func loadClass(className string, cp *classpath.Classpath) *classfile.ClassFile {
 	classData, _, err := cp.ReadClass(className)
